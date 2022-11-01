@@ -152,6 +152,11 @@ class SGDmomentumOptim(Optimizer):
         ###################################################
         # TODO: SGD+Momentum, Update params and velocities#
         ###################################################
+        for name, param in params.items():
+            velocities[name] = momentum*velocities.get(name) + learning_rate*grads.get(name)
+            param -= velocities.get(name)
+        self.velocities = velocities
+        model.params = params
         #raise NotImplementedError
         
         ###################################################
@@ -202,6 +207,18 @@ class AdamOptim(Optimizer):
         # TODO: Adam, Update t, momentums, velocities and #
         # params                                          #
         ###################################################
+#         import pdb
+#         pdb.set_trace()
+        for name, param in params.items():
+            momentums[name] = beta1*momentums[name] + (1- beta1)*grads[name]
+            mean_momen = 1/(1 - beta1)*momentums[name]
+            velocities[name] = beta2*velocities.get(name) + (1- beta2)*np.square(grads.get(name))
+            mean_veloc = 1/(1 - beta2)*velocities.get(name)
+            updated_params = np.multiply(mean_momen,  learning_rate/ (np.sqrt(mean_veloc) + eps))
+            param -= updated_params
+        self.momentums = momentums
+        self.velocities = velocities
+        model.params = params
         #raise NotImplementedError
         
         ###################################################
@@ -252,6 +269,16 @@ class NadamOptim(Optimizer):
         # TODO: Nadam, Update t, momentums, velocities and#
         # params                                          #
         ###################################################
+        for name, param in params.items():
+            momentums[name] = beta1*momentums.get(name) + (1- beta1)*grads.get(name)
+            mean_momen = 1/(1 - beta1)*momentums.get(name)
+            velocities[name] = beta2*velocities.get(name) + (1- beta2)*np.square(grads.get(name))
+            mean_veloc = 1/(1 - beta2)*velocities.get(name)
+            updated_params = np.multiply(beta1*mean_momen + grads.get(name),  learning_rate/ (np.sqrt(mean_veloc) + eps))
+            param -= updated_params
+        self.momentums = momentums
+        self.velocities = velocities
+        model.params = params
         #raise NotImplementedError
         
         ###################################################
@@ -363,16 +390,23 @@ class SGDmomtraceOptim(SGDmomentumOptim):
                     ###################################################
                     # TODO: Calculate the loss of the model           #
                     ###################################################
+                    preds = model.forward(X_batch)
+                    loss += model.loss(preds, y_batch)
                     #raise NotImplementedError
                     
                     ###################################################
                     # TODO: Update model and upper bound (RHS value)  #
                     ###################################################
+                    self.step(model, learning_rate=learning_rate)
+                    derphi = np.dot(grads['weight_2'], -grads['weight_2'])
+                    upper += loss + alpha1*alpha2*derphi
                     #raise NotImplementedError
                     
                     ###################################################
                     # TODO: Re-calculate the loss (LHS value)         #
                     ###################################################
+                    preds = model.forward(X_batch)
+                    loss += model.loss(preds, y_batch)
                     #raise NotImplementedError
                     
                     ###################################################

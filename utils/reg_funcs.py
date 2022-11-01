@@ -59,19 +59,30 @@ def bn_forward(x, gamma, beta, bn_params, mode):
         #      4. remember to use moving average method to update   #
         #         moving_mean and moving_var in the bn_params       #
         #############################################################
-        #raise NotImplementedError
-        pass
+        mean = np.mean(x, axis=0)
+        var = np.var(x, axis=0)
+        x_norm = (x - mean)/np.sqrt(var + eps)
+        out = np.multiply(gamma, x_norm) + beta
+#         import pdb
+#         pdb.set_trace()
+#         print(moving_mean.shape, mean.shape)
+        moving_mean = decay*moving_mean + (1 - decay)*mean
+        moving_var = decay*moving_var + (1 - decay)*var
         #############################################################
         #                       END OF YOUR CODE                    #
         #############################################################
 
 
     elif mode == 'test':
+        
         #############################################################
         # TODO: Batch normalization forward test mode               #
         #############################################################
         #raise NotImplementedError
-        pass
+        x_norm = (x - moving_mean)/np.sqrt(moving_var + eps)
+        out = np.multiply(gamma, x_norm) + beta
+        mean = np.mean(x, axis=0)
+        var = np.var(x, axis=0)
         #############################################################
         #                       END OF YOUR CODE                    #
         #############################################################
@@ -96,6 +107,8 @@ def bn_backward(dout, cache):
     :return:
     - dx, dgamma, dbeta
     """
+#     import pdb
+#     pdb.set_trace()
     x, gamma, beta, eps, mean, var = cache
     N, D = dout.shape
 
@@ -131,7 +144,8 @@ def dropout_forward(x, dropout_config, mode):
         # backward.                               #
         ###########################################
         #raise NotImplementedError
-        pass
+        cache = np.random.binomial(1, keep_prob, x.shape)
+        out = np.multiply(cache, x)
         ###########################################
         #             END OF YOUR CODE            #
         ###########################################
@@ -142,7 +156,7 @@ def dropout_forward(x, dropout_config, mode):
         # No need to use mask here.              #
         ##########################################
         #raise NotImplementedError
-        pass
+        out = keep_prob*x
         ###########################################
         #             END OF YOUR CODE            #
         ###########################################

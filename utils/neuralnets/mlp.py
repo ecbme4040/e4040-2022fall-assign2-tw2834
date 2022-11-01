@@ -69,7 +69,6 @@ class MLP:
         b = np.zeros(num_classes)
         params[weight_name] = W
         params[bias_name] = b
-
         self.params = params
         self.grads = {k: np.zeros_like(p) for k, p in params.items()}
         self.bn_params = bn_params
@@ -108,8 +107,13 @@ class MLP:
             # TODO: Add batch normalization here          #
             ###############################################
             #raise NotImplementedError
+#             import pdb
+#             pdb.set_trace()
             if use_bn:
-                pass
+                cache_name = 'bn_{}'.format(i)
+                x, cache[cache_name] = bn_forward(x, params["bn_gamma_{}".format(i)], 
+                                     params["bn_beta_{}".format(i)], 
+                                     bn_params[i], "train")
             ###############################################
             # END OF BATCH NORMALIZATION                  #
             ###############################################
@@ -124,7 +128,8 @@ class MLP:
             ###############################################
             #raise NotImplementedError
             if dropout_config['enabled']:
-                pass
+                cache_name = "dropout_{}".format(i)
+                x, cache[cache_name] = dropout_forward(x, dropout_config, "train")
             ###############################################
             # END OF DROPOUT                              #
             ###############################################
@@ -179,7 +184,8 @@ class MLP:
             ###############################################
             #raise NotImplementedError
             if dropout_config["enabled"]:
-                pass
+                cache_name = "dropout_{}".format(j)
+                dx = dropout_backward(dx, cache[cache_name])
             ###############################################
             # END OF DROPOUT                              #
             ###############################################
@@ -192,7 +198,10 @@ class MLP:
             ###############################################
             #raise NotImplementedError
             if use_bn:
-                pass
+                cache_name = 'bn_{}'.format(j)
+                dx, dgamma, dbeta = bn_backward(dx, cache[cache_name])
+                grads["bn_gamma_{}".format(j)] = dgamma
+                grads["bn_beta_{}".format(j)] = dbeta
             ###############################################
             # END OF BATCH NORMALIZATION                  #
             ###############################################

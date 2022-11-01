@@ -39,12 +39,17 @@ class ImageGenerator(object):
         # Following variables (along with create_aug_data() function) is one kind of implementation.
         # You can either figure out how to use them or find out your own ways to create the augmented dataset.
         # if you have your own idea of creating augmented dataset, just feel free to comment any codes you don't need
-        
+        self.x = x
+        self.y = y
+        self.N = x.shape[0]
         self.translated = None
         self.rotated = None
         self.flipped = None
         self.added = None
         self.bright = None
+        self.is_bright = None
+        self.is_vertical_flip = None
+        self.is_horizontal_flip = None
         self.x_aug = self.x.copy()
         self.y_aug = self.y.copy()
         self.N_aug = self.N
@@ -123,7 +128,12 @@ class ImageGenerator(object):
         #######################################################################
         #                         TODO: YOUR CODE HERE                        #
         #######################################################################
-        # raise NotImplementedError
+        fig = plt.figure(figsize=(10, 10))
+
+        for i in range(16):
+            ax = fig.add_subplot(4, 4, i+1)
+            ax.imshow(images[i, :].reshape(28, 28), 'gray')
+            ax.axis('off')
         
         #######################################################################
         #                                END TODO                             #
@@ -147,8 +157,8 @@ class ImageGenerator(object):
         #######################################################################
         #                         TODO: YOUR CODE HERE                        #
         #######################################################################
-        # raise NotImplementedError
-        
+        rolled = np.roll(self.x.copy(), (shift_height, shift_width), axis=(1,0))
+        return rolled
         #######################################################################
         #                                END TODO                             #
         #######################################################################
@@ -167,7 +177,8 @@ class ImageGenerator(object):
         #                         TODO: YOUR CODE HERE                        #
         #######################################################################
         # raise NotImplementedError
-        
+        rotated = rotate(self.x.copy(), angle)
+        return rotated
         #######################################################################
         #                                END TODO                             #
         #######################################################################
