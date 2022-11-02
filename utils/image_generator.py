@@ -177,7 +177,10 @@ class ImageGenerator(object):
         #                         TODO: YOUR CODE HERE                        #
         #######################################################################
         # raise NotImplementedError
-        rotated = rotate(self.x.copy(), angle)
+        x_copy = self.x.copy()
+        rotated = np.zeros_like(x_copy)
+        for i in range(x_copy.shape[0]):
+            rotated[i] = rotate(x_copy[i], angle)
         return rotated
         #######################################################################
         #                                END TODO                             #
@@ -223,8 +226,14 @@ class ImageGenerator(object):
         #######################################################################
         #                         TODO: YOUR CODE HERE                        #
         #######################################################################
-        # raise NotImplementedError
-        
+#         import pdb
+#         pdb.set_trace()
+        x_copy = self.x.copy()
+        (N, H, W, C) = int(x_copy.shape[0]*portion), x_copy.shape[1], x_copy.shape[2], x_copy.shape[3]
+        noise = np.random.normal(scale = 10, size= (N, H, W, C))
+        for i in range(N):
+            x_copy[i] = np.add(x_copy[i], noise[i], casting='safe')
+        return x_copy
         #######################################################################
         #                                END TODO                             #
         #######################################################################

@@ -107,8 +107,6 @@ def bn_backward(dout, cache):
     :return:
     - dx, dgamma, dbeta
     """
-#     import pdb
-#     pdb.set_trace()
     x, gamma, beta, eps, mean, var = cache
     N, D = dout.shape
 
