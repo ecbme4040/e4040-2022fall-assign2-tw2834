@@ -52,8 +52,15 @@ class MyLeNet_trainer():
         # TODO: create augumented data with your proposed data augmentations
         #       from part 3
         #############################################################
-        # raise NotImplementedError
-        
+        # 1. brightness(1.5)
+        # 2. add noise
+        # 3. translate
+        # 4. rotate(5)
+        bright = train_data.brightness(1.5)
+        added = train_data.add_noise(1, 10)
+        translated = train_data.translate(2,0)
+        rotated = train_data.rotate(5)
+        train_data.create_aug_data()
         #############################################################
         # END TODO
         #############################################################
@@ -92,7 +99,18 @@ class MyLeNet_trainer():
         # TODO: use data from ImageGenerator to train the network
         # hint: use python next feature "next(self.train_data_next_batch)""
         #############################################################
-        # raise NotImplementedError
+#         train_ds = tf.data.Dataset.from_tensor_slices((self.X_train, self.y_train)).shuffle(10000).batch(32)
+
+#         test_ds = tf.data.Dataset.from_tensor_slices((self.X_val, self.y_val)).batch(32)
+        
+#         if epoch == 0:
+#             self.summary()
+            
+#         for images, labels in train_ds:
+        self.train_step(self.train_data_next_batch[0], self.train_data_next_batch[1])
+        with self.train_summary_writer.as_default():
+            tf.summary.scalar('loss', self.train_loss.result(), step=epoch)
+            tf.summary.scalar('accuracy', self.train_accuracy.result(), step=epoch)
         
         #############################################################
         # END TODO

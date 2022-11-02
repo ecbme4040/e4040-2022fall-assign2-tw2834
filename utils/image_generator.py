@@ -112,7 +112,19 @@ class ImageGenerator(object):
         #######################################################################
         #                         TODO: YOUR CODE HERE                        #
         #######################################################################
-        # raise NotImplementedError
+        total_batches = self.N_aug // batch_size
+        batch_count = 0
+        while True:
+            if batch_count < total_batches:
+                batch_count += 1
+                yield (self.x_aug[(batch_count-1) * batch_size : batch_count * batch_size], 
+                       self.y_aug[(batch_count-1) * batch_size : batch_count * batch_size])
+            else:
+                if shuffle:
+                    perm = np.random.permutation(self.N_aug)
+                    self.x_aug = self.x_aug[perm]
+                    self.y_aug = self.y_aug[perm]
+                batch_count = 0
         
                 
         #######################################################################
@@ -157,8 +169,11 @@ class ImageGenerator(object):
         #######################################################################
         #                         TODO: YOUR CODE HERE                        #
         #######################################################################
-        rolled = np.roll(self.x.copy(), (shift_height, shift_width), axis=(1,0))
-        return rolled
+        translated = np.roll(self.x.copy(), (shift_height, shift_width), axis=(1,0))
+        self.translated = (translated, self.y.copy())
+        print("Translated by: ", "({},{})".format(shift_height, shift_width))
+        self.N_aug += self.N
+        return translated
         #######################################################################
         #                                END TODO                             #
         #######################################################################
@@ -181,6 +196,9 @@ class ImageGenerator(object):
         rotated = np.zeros_like(x_copy)
         for i in range(x_copy.shape[0]):
             rotated[i] = rotate(x_copy[i], angle)
+        self.rotated = (rotated, self.y.copy())
+        print("Rotated by: ", angle)
+        self.N_aug += self.N
         return rotated
         #######################################################################
         #                                END TODO                             #
@@ -233,6 +251,9 @@ class ImageGenerator(object):
         noise = np.random.normal(scale = 10, size= (N, H, W, C))
         for i in range(N):
             x_copy[i] = np.add(x_copy[i], noise[i], casting='safe')
+        self.added = (x_copy, self.y.copy())
+        print('Noise added to the portion of image: ', str(portion*100)+"%", 'Scaling factor of the noise: ', amplitude)
+        self.N_aug += self.N
         return x_copy
         #######################################################################
         #                                END TODO                             #
