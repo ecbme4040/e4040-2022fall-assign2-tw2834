@@ -207,18 +207,18 @@ class AdamOptim(Optimizer):
         # TODO: Adam, Update t, momentums, velocities and #
         # params                                          #
         ###################################################
-#         import pdb
-#         pdb.set_trace()
+        t+=1
         for name, param in params.items():
             momentums[name] = beta1*momentums[name] + (1- beta1)*grads[name]
-            mean_momen = 1/(1 - beta1)*momentums[name]
+            mean_momen = 1/(1 - beta1**2)*momentums[name]
             velocities[name] = beta2*velocities.get(name) + (1- beta2)*np.square(grads.get(name))
-            mean_veloc = 1/(1 - beta2)*velocities.get(name)
+            mean_veloc = 1/(1 - beta2**2)*velocities.get(name)
             updated_params = np.multiply(mean_momen,  learning_rate/ (np.sqrt(mean_veloc) + eps))
             param -= updated_params
         self.momentums = momentums
         self.velocities = velocities
         model.params = params
+        self.t = t
         #raise NotImplementedError
         
         ###################################################
@@ -269,16 +269,18 @@ class NadamOptim(Optimizer):
         # TODO: Nadam, Update t, momentums, velocities and#
         # params                                          #
         ###################################################
+        t=+1
         for name, param in params.items():
             momentums[name] = beta1*momentums.get(name) + (1- beta1)*grads.get(name)
-            mean_momen = 1/(1 - beta1)*momentums.get(name)
+            mean_momen = 1/(1 - beta1**2)*momentums.get(name)
             velocities[name] = beta2*velocities.get(name) + (1- beta2)*np.square(grads.get(name))
-            mean_veloc = 1/(1 - beta2)*velocities.get(name)
+            mean_veloc = 1/(1 - beta2**2)*velocities.get(name)
             updated_params = np.multiply(beta1*mean_momen + grads.get(name),  learning_rate/ (np.sqrt(mean_veloc) + eps))
             param -= updated_params
         self.momentums = momentums
         self.velocities = velocities
         model.params = params
+        self.t = t
         #raise NotImplementedError
         
         ###################################################
@@ -391,23 +393,25 @@ class SGDmomtraceOptim(SGDmomentumOptim):
                     # TODO: Calculate the loss of the model           #
                     ###################################################
                     preds = model.forward(X_batch)
-                    loss += model.loss(preds, y_batch)
-                    #raise NotImplementedError
+                    loss_left = model.loss(preds, y_batch)
+                    loss += loss_left
                     
                     ###################################################
                     # TODO: Update model and upper bound (RHS value)  #
                     ###################################################
-                    self.step(model, learning_rate=learning_rate)
-                    derphi = np.dot(grads['weight_2'], -grads['weight_2'])
-                    upper += loss + alpha1*alpha2*derphi
-                    #raise NotImplementedError
+                    p = 0
+                    for k in grads:
+                        velocities[k] *=self.momentum
+                        velocities[k] -=lr*grads[k]
+                        params[k] += velocities[k]
+                        p += sum(velocities[k].reshape(-1,1)*grads[k].reshape(-1,1))
+                    upper += loss_left + alpha1*lr*p
                     
                     ###################################################
                     # TODO: Re-calculate the loss (LHS value)         #
                     ###################################################
                     preds = model.forward(X_batch)
-                    loss += model.loss(preds, y_batch)
-                    #raise NotImplementedError
+                    loss_search += model.loss(preds, y_batch)
                     
                     ###################################################
                     #               END OF YOUR CODE                  #
@@ -441,8 +445,10 @@ class SGDmomtraceOptim(SGDmomentumOptim):
                 #       Else: update lr and search again          #
                 ###################################################
                 #raise NotImplementedError
-                if True:
+                if loss_search < upper or num_searches > self.max_searches:
                     break
+                else:
+                    lr *= alpha2
                 ###################################################
                 #               END OF YOUR CODE                  #
                 ###################################################
