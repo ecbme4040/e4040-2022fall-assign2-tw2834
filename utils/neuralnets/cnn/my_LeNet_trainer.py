@@ -111,10 +111,10 @@ class MyLeNet_trainer():
         for batch in range(self.n_batches):
             train_x, train_y = next(self.train_data_next_batch)
             self.train_step(train_x, train_y, training=True)
-        self.train_step(self.train_data_next_batch[0], self.train_data_next_batch[1])
-        with self.train_summary_writer.as_default():
-            tf.summary.scalar('loss', self.train_loss.result(), step=epoch)
-            tf.summary.scalar('accuracy', self.train_accuracy.result(), step=epoch)
+#         self.train_step(self.train_data_next_batch[0], self.train_data_next_batch[1])
+#         with self.train_summary_writer.as_default():
+#             tf.summary.scalar('loss', self.train_loss.result(), step=epoch)
+#             tf.summary.scalar('accuracy', self.train_accuracy.result(), step=epoch)
         
         #############################################################
         # END TODO
