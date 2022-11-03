@@ -56,10 +56,11 @@ class MyLeNet_trainer():
         # 2. add noise
         # 3. translate
         # 4. rotate(5)
-        bright = train_data.brightness(1.5)
-        added = train_data.add_noise(1, 10)
-        translated = train_data.translate(2,0)
-        rotated = train_data.rotate(5)
+        train_data.brightness(1.5)
+        train_data.add_noise(1, 10)
+        train_data.translate(2,0)
+#         train_data.rotate(5)
+        train_data.flip('v')
         train_data.create_aug_data()
         #############################################################
         # END TODO
@@ -107,6 +108,9 @@ class MyLeNet_trainer():
 #             self.summary()
             
 #         for images, labels in train_ds:
+        for batch in range(self.n_batches):
+            train_x, train_y = next(self.train_data_next_batch)
+            self.train_step(train_x, train_y, training=True)
         self.train_step(self.train_data_next_batch[0], self.train_data_next_batch[1])
         with self.train_summary_writer.as_default():
             tf.summary.scalar('loss', self.train_loss.result(), step=epoch)
