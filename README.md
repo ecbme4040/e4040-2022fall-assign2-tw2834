@@ -26,8 +26,56 @@ TODO students: Run commands to create a directory tree, as described in previous
 
 ```
 .
-├── Assignment2_intro.ipynb
+├── Assignment2-intro.ipynb
+├── KaggleModel
+│   ├── saved_model.pb
+│   └── variables
+│       ├── variables.data-00000-of-00001
+│       └── variables.index
 ├── README.md
+├── Untitled.ipynb
+├── figures
+│   ├── tw2834_gcp_work_example_screenshot_1.png
+│   ├── tw2834_gcp_work_example_screenshot_2.png
+│   └── tw2834_gcp_work_example_screenshot_3.png
+├── predicted.csv
 ├── requirements.txt
-├── ...
+├── task1-optimization.ipynb
+├── task2-regularization.ipynb
+├── task3_cnn.ipynb
+├── task4-augmentation.ipynb
+├── task5-kaggle.ipynb
+├── tensorboard.png
+└── utils
+    ├── __pycache__
+    │   ├── image_generator.cpython-39.pyc
+    │   ├── layer_funcs.cpython-39.pyc
+    │   ├── optimizers.cpython-39.pyc
+    │   └── reg_funcs.cpython-39.pyc
+    ├── cifar_utils.py
+    ├── image_generator.py
+    ├── layer_funcs.py
+    ├── neuralnets
+    │   ├── __pycache__
+    │   │   └── mlp.cpython-39.pyc
+    │   ├── cnn
+    │   │   ├── LeNet_trainer.py
+    │   │   ├── __pycache__
+    │   │   │   ├── model_LeNet.cpython-39.pyc
+    │   │   │   └── my_LeNet_trainer.cpython-39.pyc
+    │   │   ├── model_LeNet.py
+    │   │   ├── my_LeNet_trainer.py
+    │   │   └── my_model_LeNet.py
+    │   └── mlp.py
+    ├── notebook_images
+    │   ├── Task3_2_2_metrics.png
+    │   ├── task3_1.jpg
+    │   ├── task3_2_1.png
+    │   ├── task3_2_2.png
+    │   └── task3_2_answer.png
+    ├── optimizers.py
+    └── reg_funcs.py
+
+10 directories, 39 files
 ```
+
