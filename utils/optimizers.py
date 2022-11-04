@@ -210,10 +210,10 @@ class AdamOptim(Optimizer):
         t+=1
         for name, param in params.items():
             momentums[name] = beta1*momentums[name] + (1- beta1)*grads[name]
-            mean_momen = 1/(1 - beta1**2)*momentums[name]
+            mean_momen = 1/(1 - beta1**t)*momentums[name]
             velocities[name] = beta2*velocities.get(name) + (1- beta2)*np.square(grads.get(name))
-            mean_veloc = 1/(1 - beta2**2)*velocities.get(name)
-            updated_params = np.multiply(mean_momen,  learning_rate/ (np.sqrt(mean_veloc) + eps))
+            mean_veloc = 1/(1 - beta2**t)*velocities.get(name)
+            updated_params = learning_rate*mean_momen/ (np.sqrt(mean_veloc) + eps)
             param -= updated_params
         self.momentums = momentums
         self.velocities = velocities
@@ -272,11 +272,11 @@ class NadamOptim(Optimizer):
         t=+1
         for name, param in params.items():
             momentums[name] = beta1*momentums.get(name) + (1- beta1)*grads.get(name)
-            mean_momen = 1/(1 - beta1**2)*momentums.get(name)
+            mean_momen = 1/(1 - beta1**t)*momentums.get(name)
             velocities[name] = beta2*velocities.get(name) + (1- beta2)*np.square(grads.get(name))
-            mean_veloc = 1/(1 - beta2**2)*velocities.get(name)
-            updated_params = np.multiply(beta1*mean_momen + grads.get(name),  learning_rate/ (np.sqrt(mean_veloc) + eps))
-            param -= updated_params
+            mean_veloc = 1/(1 - beta2**t)*velocities.get(name)
+            updated_params = beta1*mean_momen + (1-beta1)/(1 - beta1**t)*grads.get(name)
+            param -= learning_rate*updated_params/(np.sqrt(mean_veloc) + eps)
         self.momentums = momentums
         self.velocities = velocities
         model.params = params
