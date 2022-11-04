@@ -74,8 +74,8 @@ def bn_forward(x, gamma, beta, bn_params, mode):
         #############################################################
         # TODO: Batch normalization forward test mode               #
         #############################################################
-        mean = bn_params['moving_mean']
-        var = bn_params['moving_var']
+        mean = moving_mean
+        var = moving_var
         out = gamma * (x - mean)/np.sqrt(var + eps) + beta
         #############################################################
         #                       END OF YOUR CODE                    #
