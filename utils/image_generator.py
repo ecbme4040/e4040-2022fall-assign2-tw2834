@@ -169,9 +169,9 @@ class ImageGenerator(object):
         #######################################################################
         #                         TODO: YOUR CODE HERE                        #
         #######################################################################
-        translated = np.roll(self.x.copy(), (shift_height, shift_width), axis=(1,0))
+        translated = np.roll(self.x.copy(), (shift_width, shift_height), axis=(1,0))
         self.translated = (translated, self.y.copy())
-        print("Translated by: ", "({},{})".format(shift_height, shift_width))
+        print("Translated by: ", "({},{})".format(shift_width, shift_height))
         self.N_aug += self.N
         return translated
         #######################################################################
@@ -244,8 +244,6 @@ class ImageGenerator(object):
         #######################################################################
         #                         TODO: YOUR CODE HERE                        #
         #######################################################################
-#         import pdb
-#         pdb.set_trace()
         x_copy = self.x.copy()
         (N, H, W, C) = int(x_copy.shape[0]*portion), x_copy.shape[1], x_copy.shape[2], x_copy.shape[3]
         noise = np.random.normal(scale = 10, size= (N, H, W, C))

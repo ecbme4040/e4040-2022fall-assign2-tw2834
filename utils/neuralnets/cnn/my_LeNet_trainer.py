@@ -59,7 +59,6 @@ class MyLeNet_trainer():
         train_data.brightness(1.5)
         train_data.add_noise(1, 10)
         train_data.translate(2,0)
-#         train_data.rotate(5)
         train_data.flip('v')
         train_data.create_aug_data()
         #############################################################
@@ -100,14 +99,6 @@ class MyLeNet_trainer():
         # TODO: use data from ImageGenerator to train the network
         # hint: use python next feature "next(self.train_data_next_batch)""
         #############################################################
-#         train_ds = tf.data.Dataset.from_tensor_slices((self.X_train, self.y_train)).shuffle(10000).batch(32)
-
-#         test_ds = tf.data.Dataset.from_tensor_slices((self.X_val, self.y_val)).batch(32)
-        
-#         if epoch == 0:
-#             self.summary()
-            
-#         for images, labels in train_ds:
         for batch in range(self.n_batches):
             train_x, train_y = next(self.train_data_next_batch)
             self.train_step(train_x, train_y, training=True)
